@@ -24,6 +24,7 @@ public class DesingColorController {
     @Autowired
     private ResponseUtils responseUtils;
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createDesingColor(@RequestBody DesingColorRequest newDesingColorRequest) {
         SuccessResponse responseSuccess = responseUtils.successResponseCreate(desingColorService.saveDesingColor(newDesingColorRequest),
@@ -31,7 +32,7 @@ public class DesingColorController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole ('DESING_READ','ADMIN')")
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDesingColor(    @RequestParam(required = false) Integer pageIndex,
                                                 @RequestParam(required = false) Integer pageSize)
@@ -42,6 +43,7 @@ public class DesingColorController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingColor( @RequestBody DesingColorRequest desingColorRequest, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingColorService.editedDesingColor(desingColorRequest,id),
@@ -49,6 +51,7 @@ public class DesingColorController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingColorByStatus(@RequestBody DesingRequestStatus desingRequestStatus, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingColorService.editedDesingColorByStatus(desingRequestStatus,id),

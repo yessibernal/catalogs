@@ -1,7 +1,6 @@
 package com.innter.msdesigncatalog.services;
 
 import com.innter.msdesigncatalog.dtos.RolDto;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;

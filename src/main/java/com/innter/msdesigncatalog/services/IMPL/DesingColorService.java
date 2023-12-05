@@ -57,11 +57,16 @@ public class DesingColorService implements IDesingColorService {
     @Override
     public DesingColorResponse editedDesingColor(DesingColorRequest newDesingColor, Long id) {
         DesingColorEntity desingColor = findDesingColorById(desingColorRepository.findById(id));
-        desingColor.setName(newDesingColor.getName());
-        desingColor.setColor(newDesingColor.getColor());
-        desingColor.setProvider(newDesingColor.getProvider());
-        desingColorRepository.save(desingColor);
-        return desingColorMapper.desingColorToDesingColorResponse(desingColor);
+
+        if (desingColor.getStatus() == true){
+            desingColor.setName(newDesingColor.getName());
+            desingColor.setColor(newDesingColor.getColor());
+            desingColor.setProvider(newDesingColor.getProvider());
+            desingColorRepository.save(desingColor);
+            return desingColorMapper.desingColorToDesingColorResponse(desingColor);
+        }
+
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "El color no tiene un estado activo");
     }
 
     @Override

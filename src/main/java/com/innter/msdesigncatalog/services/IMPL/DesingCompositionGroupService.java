@@ -53,9 +53,12 @@ public class DesingCompositionGroupService implements IDesingCompositionGroupSer
     @Override
     public DesingCompositionGroupResponse editedDesingCompositionGroup(DesingCompositionGroupRequest desingCompositionGroupRequest, Long id) {
         DesingCompositionGroupEntity desingCompositionGroupEntity = findDesingCompositionGroupById(desingCompositionGroupRepository.findById(id));
-        desingCompositionGroupEntity.setName(desingCompositionGroupRequest.getName());
-        desingCompositionGroupRepository.save(desingCompositionGroupEntity);
-        return desingCompositionGroupMapper.desingCompositionGroupToDesingCompositionGroupResponse(desingCompositionGroupEntity);
+        if (desingCompositionGroupEntity.getStatus() == true){
+            desingCompositionGroupEntity.setName(desingCompositionGroupRequest.getName());
+            desingCompositionGroupRepository.save(desingCompositionGroupEntity);
+            return desingCompositionGroupMapper.desingCompositionGroupToDesingCompositionGroupResponse(desingCompositionGroupEntity);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La Familia de Composición no tiene un estado activo");
     }
 
     @Override

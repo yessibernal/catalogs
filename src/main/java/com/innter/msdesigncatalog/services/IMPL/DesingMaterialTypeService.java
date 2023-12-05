@@ -46,18 +46,21 @@ public class DesingMaterialTypeService implements IDesingMaterialTypeService {
             });
             return desingMaterialTypeResponses;
         }catch (Exception e){
-            throw new BadRequestTextil("P-400", HttpStatus.BAD_REQUEST, "Los colores no se pudieron encontrar.");
+            throw new BadRequestTextil("P-400", HttpStatus.BAD_REQUEST, "Los Tipos de Materiales no se pudieron encontrar.");
         }
     }
 
     @Override
     public DesingMaterialTypeResponse editedDesingMaterialType(DesingMaterialTypeRequest desingMaterialTypeRequest, Long id) {
         DesingMaterialTypeEntity desingMaterialType = findDesingMaterialTypeById(desingMaterialTypeRepository.findById(id));
-        desingMaterialType.setName(desingMaterialTypeRequest.getName());
-        desingMaterialType.setCode(desingMaterialTypeRequest.getCode());
-        desingMaterialType.setType(desingMaterialTypeRequest.getType());
-        desingMaterialType.setClassification(desingMaterialTypeRequest.getClassification());
-        return desingMaterialTypeMapper.desingMaterialTypeToDesingMaterialTypeResponse(desingMaterialType);
+        if (desingMaterialType.getStatus() == true){
+            desingMaterialType.setName(desingMaterialTypeRequest.getName());
+            desingMaterialType.setCode(desingMaterialTypeRequest.getCode());
+            desingMaterialType.setType(desingMaterialTypeRequest.getType());
+            desingMaterialType.setClassification(desingMaterialTypeRequest.getClassification());
+            return desingMaterialTypeMapper.desingMaterialTypeToDesingMaterialTypeResponse(desingMaterialType);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "El Tipo de Material no tiene un estado activo");
     }
 
     @Override
@@ -68,7 +71,7 @@ public class DesingMaterialTypeService implements IDesingMaterialTypeService {
             desingMaterialTypeRepository.save(desingMaterialType);
             return desingMaterialTypeMapper.desingMaterialTypeToDesingMaterialTypeResponse(desingMaterialType);
         }catch (Exception e){
-            throw new BadRequestTextil("P-400", HttpStatus.BAD_REQUEST, "El color no fue encontrado.");
+            throw new BadRequestTextil("P-400", HttpStatus.BAD_REQUEST, "El Tipo de Material no fue encontrado.");
         }
     }
 

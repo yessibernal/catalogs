@@ -56,9 +56,12 @@ public class DesingTracePieceService implements IDesingTracePieceService {
     @Override
     public DesingTracePieceResponse editedDesingTracePiece(DesingTracePieceRequest desingTracePieceRequest, Long id) {
         DesingTracePieceEntity desingTracePiece = findDesingTracePieceById(desingTracePieceRepository.findById(id));
-        desingTracePiece.setName(desingTracePieceRequest.getName());
-        desingTracePieceRepository.save(desingTracePiece);
-        return desingTracePieceMapper.desingTracePieceToDesingTracePieceResponse(desingTracePiece);
+        if (desingTracePiece.getStatus() == true){
+            desingTracePiece.setName(desingTracePieceRequest.getName());
+            desingTracePieceRepository.save(desingTracePiece);
+            return desingTracePieceMapper.desingTracePieceToDesingTracePieceResponse(desingTracePiece);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La pieza de trazo no tiene un estado activo");
     }
 
     @Override

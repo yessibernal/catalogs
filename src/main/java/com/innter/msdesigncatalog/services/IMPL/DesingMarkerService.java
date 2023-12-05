@@ -53,9 +53,12 @@ public class DesingMarkerService implements IDesingMarkerService {
     @Override
     public DesingMarkerResponse editedDesingMarker(DesingMarkerRequest desingMarkerRequest, Long id) {
         DesingMarkerEntity desingMarker = findDesingMarkerById(desingMarkerRepository.findById(id));
-        desingMarker.setName(desingMarkerRequest.getName());
-        desingMarkerRepository.save(desingMarker);
-        return desingMarkerMapper.desingMarkerToDesingMarkerResponse(desingMarker);
+        if (desingMarker.getStatus() == true){
+            desingMarker.setName(desingMarkerRequest.getName());
+            desingMarkerRepository.save(desingMarker);
+            return desingMarkerMapper.desingMarkerToDesingMarkerResponse(desingMarker);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "El Marcador no tiene un estado activo");
     }
 
     @Override

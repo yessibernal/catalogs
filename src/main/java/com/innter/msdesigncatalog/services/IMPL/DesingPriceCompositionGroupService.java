@@ -64,9 +64,12 @@ public class DesingPriceCompositionGroupService implements IDesingPriceCompositi
     @Override
     public DesingPriceCompositionGroupResponse editedDesingPriceCompositionGroup(DesingPriceCompositionGroupRequest desingPriceCompositionGroupRequest, Long id) {
         DesingPriceCompositionGroupEntity desingPriceCompositionGroup = findDesingPriceCompositionGroupById(desingPriceCompositionGroupRepository.findById(id));
-        desingPriceCompositionGroup.setPrice(desingPriceCompositionGroupRequest.getPrice());
-        desingPriceCompositionGroupRepository.save(desingPriceCompositionGroup);
-        return desingPriceCompositionGroupMapper.desingPriceCompositionGroupToDesingPriceCompositionGroupResponse(desingPriceCompositionGroup);
+        if (desingPriceCompositionGroup.getStatus() == true){
+            desingPriceCompositionGroup.setPrice(desingPriceCompositionGroupRequest.getPrice());
+            desingPriceCompositionGroupRepository.save(desingPriceCompositionGroup);
+            return desingPriceCompositionGroupMapper.desingPriceCompositionGroupToDesingPriceCompositionGroupResponse(desingPriceCompositionGroup);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "El Precio de la Familia de Composición no tiene un estado activo");
     }
 
 

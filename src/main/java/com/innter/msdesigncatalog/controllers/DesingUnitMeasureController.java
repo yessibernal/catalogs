@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.innter.msdesigncatalog.services.IDesingUnitMeasureService;
 import com.innter.msdesigncatalog.utils.ResponseUtils;
@@ -22,13 +23,15 @@ public class DesingUnitMeasureController {
     @Autowired
     private ResponseUtils responseUtils;
 
+    @PreAuthorize("hasAnyRole ('DESING_READ','ADMIN')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getByIdDesingUnitMeasure( @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingUnitMeasureService.getDesingUnitMeasure(id),
                 "La unidad de medida con el id:" + id + " se encontró correctamente.");
-        return new ResponseEntity<>(responseSuccess, HttpStatus.FOUND);
+        return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createDesingUnitMeasure( @RequestBody DesingUnitMeasureRequest newDesingUnitMeasure) {
         SuccessResponse responseSuccess = responseUtils.successResponseCreate(desingUnitMeasureService.saveDesingUnitMeasure(newDesingUnitMeasure),
@@ -36,6 +39,7 @@ public class DesingUnitMeasureController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingUnitMeasure( @RequestBody DesingUnitMeasureRequest newDesingUnitMeasure, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingUnitMeasureService.editedDesingUnitMeasure(newDesingUnitMeasure,id),
@@ -43,6 +47,7 @@ public class DesingUnitMeasureController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingUnitMeasureByStatus(@RequestBody DesingRequestStatus desingRequestStatus, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingUnitMeasureService.editedDesingUnitMeasureByStatus(desingRequestStatus,id),
@@ -50,6 +55,7 @@ public class DesingUnitMeasureController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('DESING_READ','ADMIN')")
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDesingUnitMeasure(
                                                     @RequestParam(required = false) Integer pageIndex,
@@ -57,6 +63,6 @@ public class DesingUnitMeasureController {
         Pageable pageable = PageRequest.of(pageIndex , pageSize);
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingUnitMeasureService.getDesingUnitsMeasure(pageable),
                 "Las unidades de medida se encontraron correctamente.");
-        return new ResponseEntity<>(responseSuccess, HttpStatus.FOUND);
+        return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 }

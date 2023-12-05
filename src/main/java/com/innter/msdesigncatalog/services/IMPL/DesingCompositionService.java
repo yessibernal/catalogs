@@ -54,9 +54,12 @@ public class DesingCompositionService implements IDesingCompositionService {
     @Override
     public DesingCompositionResponse editedDesingComposition(DesingCompositionRequest desingCompositionRequest, Long id) {
         DesingCompositionEntity desingCompositionEntity = findDesingCompositionById(desingCompositionRepository.findById(id));
-        desingCompositionEntity.setName(desingCompositionRequest.getName());
-        desingCompositionRepository.save(desingCompositionEntity);
-        return desingCompositionMapper.desingCompositionToDesingCompositionResponse(desingCompositionEntity);
+        if (desingCompositionEntity.getStatus() == true){
+            desingCompositionEntity.setName(desingCompositionRequest.getName());
+            desingCompositionRepository.save(desingCompositionEntity);
+            return desingCompositionMapper.desingCompositionToDesingCompositionResponse(desingCompositionEntity);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La composición no tiene un estado activo");
     }
 
     @Override

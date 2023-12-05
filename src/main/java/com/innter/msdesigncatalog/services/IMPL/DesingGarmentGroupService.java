@@ -54,10 +54,13 @@ public class DesingGarmentGroupService implements IDesingGarmentGroupService {
     @Override
     public DesingGarmentGroupResponse editedDesingGarmentGroup(DesingGarmentGroupRequest desingGarmentGroupRequest, Long id) {
         DesingGarmentGroupEntity desingGarmentGroup = finDesingGarmentGroupById(desingGarmentGroupRepository.findById(id));
-        desingGarmentGroup.setName(desingGarmentGroupRequest.getName());
-        desingGarmentGroup.setCode(desingGarmentGroupRequest.getCode());
-        desingGarmentGroup.setGarmentLocation(desingGarmentGroupRequest.getGarmentLocation());
-        return desingGarmentGroupMapper.desingGarmentGroupToDesingGarmentGroupResponse(desingGarmentGroup);
+        if (desingGarmentGroup.getStatus() == true){
+            desingGarmentGroup.setName(desingGarmentGroupRequest.getName());
+            desingGarmentGroup.setCode(desingGarmentGroupRequest.getCode());
+            desingGarmentGroup.setGarmentLocation(desingGarmentGroupRequest.getGarmentLocation());
+            return desingGarmentGroupMapper.desingGarmentGroupToDesingGarmentGroupResponse(desingGarmentGroup);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La familia de prendas no tiene un estado activo");
     }
 
     @Override

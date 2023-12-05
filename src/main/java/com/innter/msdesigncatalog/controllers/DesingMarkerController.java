@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class DesingMarkerController {
     @Autowired
     private ResponseUtils responseUtils;
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createDesingMarker(@RequestBody DesingMarkerRequest newDesingMarkerRequest) {
         SuccessResponse responseSuccess = responseUtils.successResponseCreate(desingMarkerService.saveDesingMarker(newDesingMarkerRequest),
@@ -29,6 +31,7 @@ public class DesingMarkerController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole ('DESING_READ','ADMIN')")
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDesingMarker(    @RequestParam(required = false) Integer pageIndex,
                                                 @RequestParam(required = false) Integer pageSize)
@@ -36,9 +39,10 @@ public class DesingMarkerController {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingMarkerService.getDesingMarkers(pageable),
                 "Los Marcadores se encontraron correctamente.");
-        return new ResponseEntity<>(responseSuccess, HttpStatus.FOUND);
+        return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingMarker( @RequestBody DesingMarkerRequest desingMarkerRequest, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingMarkerService.editedDesingMarker(desingMarkerRequest,id),
@@ -46,6 +50,7 @@ public class DesingMarkerController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingMarkerByStatus(@RequestBody DesingRequestStatus desingRequestStatus, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingMarkerService.editedDesingMarkerByStatus(desingRequestStatus,id),

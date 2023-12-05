@@ -50,10 +50,13 @@ public class DesingUnitMeasureService implements IDesingUnitMeasureService {
     @Override
     public DesingUnitMeasureResponse editedDesingUnitMeasure(DesingUnitMeasureRequest newDesingUnitMeasure, Long id) {
         DesingUnitMeasureEntity desingUnitMeasure = findDesingUnitMeasureById(desingUnitMeasureRepository.findById(id));
-        desingUnitMeasure.setName(newDesingUnitMeasure.getName());
-        desingUnitMeasure.setAbbreviation(newDesingUnitMeasure.getAbbreviation());
-        desingUnitMeasureRepository.save(desingUnitMeasure);
-        return desingUnitMeasureMapper.desingUnitMeasureToDesingUnitMeasureResponse(desingUnitMeasure);
+        if (desingUnitMeasure.getStatus() == true){
+            desingUnitMeasure.setName(newDesingUnitMeasure.getName());
+            desingUnitMeasure.setAbbreviation(newDesingUnitMeasure.getAbbreviation());
+            desingUnitMeasureRepository.save(desingUnitMeasure);
+            return desingUnitMeasureMapper.desingUnitMeasureToDesingUnitMeasureResponse(desingUnitMeasure);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La unidad de medida no tiene un estado activo");
     }
 
     @Override

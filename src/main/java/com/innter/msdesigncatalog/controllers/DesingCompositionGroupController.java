@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class DesingCompositionGroupController {
     @Autowired
     private ResponseUtils responseUtils;
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createDesingCompositionGroup(@RequestBody DesingCompositionGroupRequest newDesingCompositionGroupRequest) {
         SuccessResponse responseSuccess = responseUtils.successResponseCreate(desingCompositionGroupService.saveDesingCompositionGroup(newDesingCompositionGroupRequest),
@@ -28,6 +30,8 @@ public class DesingCompositionGroupController {
         return new ResponseEntity<>(responseSuccess, HttpStatus.CREATED);
     }
 
+
+    @PreAuthorize("hasAnyRole ('DESING_READ','ADMIN')")
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDesingCompositionGroup(    @RequestParam(required = false) Integer pageIndex,
                                                 @RequestParam(required = false) Integer pageSize)
@@ -35,15 +39,18 @@ public class DesingCompositionGroupController {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingCompositionGroupService.getDesingCompositionGroup(pageable),
                 "Las Familias de Composición se encontraron correctamente.");
-        return new ResponseEntity<>(responseSuccess, HttpStatus.FOUND);
+        return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingCompositionGroup( @RequestBody DesingCompositionGroupRequest desingCompositionGroupRequest, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingCompositionGroupService.editedDesingCompositionGroup(desingCompositionGroupRequest,id),
                 "La Familia de Composición con el id:" + id + " se actualizo correctamente.");
         return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyRole ('ADMIN','DESING_WRITE')")
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDesingCompositionGroupByStatus(@RequestBody DesingRequestStatus desingRequestStatus, @PathVariable long id) {
         SuccessResponse responseSuccess = responseUtils.successResponseOK(desingCompositionGroupService.editedDesingCompositionGroupById(desingRequestStatus,id),

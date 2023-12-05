@@ -5,6 +5,7 @@ import com.innter.msdesigncatalog.dtos.request.DesingCareInstructionRequest;
 import com.innter.msdesigncatalog.dtos.response.DesingCareInstructionResponse;
 import com.innter.msdesigncatalog.dtos.request.DesingRequestStatus;
 import com.innter.msdesigncatalog.entities.DesingCareInstructionEntity;
+import com.innter.msdesigncatalog.entities.DesingColorEntity;
 import com.innter.msdesigncatalog.exceptions.BadRequestTextil;
 import com.innter.msdesigncatalog.exceptions.NotFoundTextil;
 import com.innter.msdesigncatalog.mappers.DesingCareInstructionMapper;
@@ -55,10 +56,13 @@ public class DesingCareInstructionService implements IDesingCareInstructionServi
     @Override
     public DesingCareInstructionResponse editedDesingCareInstruction(DesingCareInstructionRequest newDesingCareInstruction, Long id) {
         DesingCareInstructionEntity desingCareInstruction = findDesingCareInstructionById(desingCareInstructionRepository.findById(id));
-        desingCareInstruction.setName(newDesingCareInstruction.getName());
-        desingCareInstruction.setIcon(newDesingCareInstruction.getIcon());
-        desingCareInstructionRepository.save(desingCareInstruction);
-        return desingCareInstructionMapper.desingCareInstructionToDesingCareInstructionResponse(desingCareInstruction);
+        if (desingCareInstruction.getStatus() == true){
+            desingCareInstruction.setName(newDesingCareInstruction.getName());
+            desingCareInstruction.setIcon(newDesingCareInstruction.getIcon());
+            desingCareInstructionRepository.save(desingCareInstruction);
+            return desingCareInstructionMapper.desingCareInstructionToDesingCareInstructionResponse(desingCareInstruction);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La instrucción del cuidado no tiene un estado activo");
     }
 
     @Override
@@ -69,7 +73,7 @@ public class DesingCareInstructionService implements IDesingCareInstructionServi
             desingCareInstructionRepository.save(desingCareInstruction);
             return desingCareInstructionMapper.desingCareInstructionToDesingCareInstructionResponse(desingCareInstruction);
         }catch (Exception e){
-            throw new BadRequestTextil("P-400", HttpStatus.BAD_REQUEST, "El color no fue encontrada.");
+            throw new BadRequestTextil("P-400", HttpStatus.BAD_REQUEST, "La instrucción del cuidado no fue encontrada.");
         }
     }
 

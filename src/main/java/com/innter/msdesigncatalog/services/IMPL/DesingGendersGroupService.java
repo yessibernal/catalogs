@@ -52,9 +52,13 @@ public class DesingGendersGroupService  implements IDesingGendersGroupService {
     @Override
     public DesingGenderGroupResponse editedDesingGenderGroup(DesingGenderGroupRequest desingGenderGroupRequest, Long id) {
         DesingGendersGroupEntity desingGendersGroup = findDesingGenderGroupById(desingGenderGroupRepository.findById(id));
-        desingGendersGroup.setName(desingGenderGroupRequest.getName());
-        desingGenderGroupRepository.save(desingGendersGroup);
-        return desingGendersGroupMapper.desingGenderGroupToDesingGenderGroupResponse(desingGendersGroup);
+        if (desingGendersGroup.getStatus() == true){
+            desingGendersGroup.setName(desingGenderGroupRequest.getName());
+            desingGenderGroupRepository.save(desingGendersGroup);
+            return desingGendersGroupMapper.desingGenderGroupToDesingGenderGroupResponse(desingGendersGroup);
+        }
+        throw new BadRequestTextil("P-404", HttpStatus.NOT_FOUND, "La familia de Genero no tiene un estado activo");
+
     }
 
     @Override
